@@ -9,7 +9,7 @@ fi
 
 . ../../cgi-bin/params.sh
 
-id=$(cd ../ && pwd)
+id=$(cd ../ && basename $(pwd) && cd cgi-bin)
 
 if [ "$MAX_POSTS" -gt 0 ] && [ $(ls [0-9]* 2>/dev/null | wc -l) -ge "$MAX_POSTS" ]
 then
@@ -35,22 +35,25 @@ no=$(($no + 1))
 
 post="$stamp"_"$no"
 
-if [ "$comment" = '' ]
+if [ "$comment" = "" ]
 then
-	pherror 'Post failed: You must post a comment.'
+	pherror "Post failed."
+	phline
+	phinfo "You must post a comment."
 	phitem 1 'Return to thread' "$CHAN_ROOT/$id"
 	exit 1
 fi
 
-if [ $len -gt $MAX_POSTLEN ]
+if [ "$len" -gt "$MAX_POSTLEN" ]
 then
-	pherror "Post failed: Comment too long ($len/$MAX_POSTLEN)"
+	pherror "Post failed"
+	phline
+	phinfo "Comment too long ($len/$MAX_POSTLEN)"
 	phitem 1 'Return to thread' "$CHAN_ROOT/$id"
 	exit 1
 fi
 
-coolstorybro=$(sh ../../cgi-bin/cooldown.sh post)
-if ! $coolstorybro
+if [! $(sh ../../cgi-bin/cooldown.sh $post)]
 then
 	pherror "Post failed"
 	phline
@@ -106,12 +109,12 @@ then
 		then
 			echo "$line" | fmt -66 -s | fold -w 66 | while read -r fmtline
 			do
-				echo "  >$fmtline" >> $post
+				echo "  >$fmtline" >> ../$post
 			done
 		else
 			kind=$(echo "$line" | head -c 1)
 			rest=$(echo "$line" | tail -c +2)
-			echo "$kind  >$rest" >> $post
+			echo "$kind  >$rest" >> ../$post
 		fi
 	done
 	IFS="$saveifs"
@@ -119,14 +122,14 @@ then
 	comment=$(echo "$comment" | sed -r 's/>>[0-9]+ ?(.*)/\1/' | sed 's/	/    /g')
 fi
 
-echo "$comment" | fmt -70 > ../s_$post
+echo "$comment" | fmt -70 > ../../s_$post
 
 echo "0*SPOILER*	$CHAN_ROOT/$id/s_$post	$SERVER_HOST	$SERVER_PORT" >> ../$post
 
-if [ -e $post ]
+if [ -e ../$post ]
 then
 	phinfo 'Post successful!'
-	mv ../s_$post ./
+	mv ../../s_$post ../
 	echo $no > ../../posts
 
 	sh ../../cgi-bin/addpostpass.sh $no
@@ -139,11 +142,11 @@ then
 	if [ "$MAX_RSS_ITEMS" -gt 0 ]
 	then
     sh ../../cgi-bin/updaterss.sh $id $no "*SPOILER*"	cd ..
-	sh ../../cgi-bin/updatethreadcache.sh > ../../threadcache
+	sh ../cgi-bin/updatethreadcache.sh > ../threadcache
 	fi
 else
 	pherror 'Could not post.'
-	rm ../s_$post
+	rm ../../s_$post
 fi
 
 phitem 1 'Return to thread' "$CHAN_ROOT/$(basename $id)"

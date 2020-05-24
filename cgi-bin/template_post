@@ -31,7 +31,7 @@ then
 else
 	no=0
 fi
-no=$((no + 1))
+no=$(($no + 1))
 
 post="$stamp"_"$no"
 

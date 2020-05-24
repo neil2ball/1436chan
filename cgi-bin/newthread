@@ -92,14 +92,12 @@ fi
 
 mkdir ../$post
 mkdir ../$post/cgi-bin
-mkdir ../$post/postfiles
 
 if [ -e ../$post ]
 then
 	echo "$comment" > ../$post/gophertag
 
-	ln template_gophermap ../$post/cgi-bin/gophermap
-	ln -s ../$post/cgi-bin/gophermap ../$post/gophermap
+	ln template_gophermap ../$post/gophermap
 	ln template_post ../$post/cgi-bin/post
 	ln template_postlink ../$post/cgi-bin/postlink
 	ln template_postfile ../$post/cgi-bin/postfile

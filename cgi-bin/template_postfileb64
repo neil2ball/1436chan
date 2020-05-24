@@ -14,7 +14,7 @@ fi
 
 . ../../cgi-bin/params.sh
 
-id=$(cd ../ && pwd)
+id=$(cd ../ && basename $(pwd) && cd cgi-bin)
 
 if [[ "$MAX_POSTS" -gt 0 && $(ls [0-9]* 2>/dev/null | wc -l) -ge $MAX_POSTS ]]
 then
@@ -90,8 +90,7 @@ fname="file_$post"
 
 echo "$data" | base64 -d > "$fname"
 
-mime=$(file -i -b "$fname")
-mime="${mime%;*}"
+mime=$(file -i -b "$fname" | cut -d ';' -f 1)
 
 if [[ "$MAX_IMAGE" && "$mime" == "image/"* ]]
 then
@@ -136,9 +135,7 @@ then
 	fname="$fname.$ext"
 fi
 
-mv "$fname" $id/
-
-cd $id
+cd $id/cgi-bin
 
 # post id
 if test "$ENABLE_POST_IDS" = y

@@ -9,7 +9,7 @@ fi
 
 . ../../cgi-bin/params.sh
 
-id=$(cd ../ && pwd)
+id=$(cd ../ && basename $(pwd) && cd cgi-bin)
 
 if [ ! "$QUERY_STRING" ]
 then
@@ -103,7 +103,6 @@ then
 	exit 1
 fi
 
-cd ..
 
 if [ ! "$ext" ]
 then
@@ -112,10 +111,10 @@ else
 	fname="file_$post.$ext"
 fi
 
-curl -L "$proto://$uri" > "$fname" -m 3 --limit-rate $MAX_UPLOAD
+curl -L "$proto://$uri" > ../"$fname" -m 3 --limit-rate $MAX_UPLOAD
 err=$?
 
-size=$(stat --printf "%s" "$fname")
+size=$(stat --printf "%s" ../"$fname")
 
 if [ ! "$size" ]
 then
@@ -126,17 +125,17 @@ if [ "$size" -gt "$MAX_UPLOAD" ] || [ $err -ne 0 ]
 then
 	pherror 'Failed to fetch file (too large or timed out).'
 	phitem 1 'Return to thread' "$CHAN_ROOT/$id"
-	rm -f "$fname"
+	rm -f ../"$fname"
 	exit 1
 fi
 
-mime=$(file -i -b "$fname" | cut -d ';' -f 1)
+mime=$(file -i -b ../"$fname" | cut -d ';' -f 1)
 
 if [ "$MAX_IMAGE" ] && echo "$mime" | grep -q 'image/'
 then
 	maxw=$(echo $MAX_IMAGE | cut -f 1 -d 'x')
 	maxh=$(echo $MAX_IMAGE | cut -f 2 -d 'x')
-	dims=$(identify "$fname" | head -n 1 | cut -f 3 -d ' ')
+	dims=$(identify ../"$fname" | head -n 1 | cut -f 3 -d ' ')
 	imgw=$(echo $dims | cut -f 1 -d 'x')
 	imgh=$(echo $dims | cut -f 2 -d 'x')
 
@@ -144,7 +143,7 @@ then
 	then
 		pherror "Image too large ($imgw x $imgh, max $maxw x $maxh)"
 		phitem 1 'Return to thread' "$CHAN_ROOT/$id"
-		rm -f "$fname"
+		rm -f ../"$fname"
 		exit 1
 	fi
 fi
@@ -173,14 +172,11 @@ then
 	
 	if [ "$ext" = '' ]
 	then
-		mv "$fname" "$fname.$ext"
+		mv ../"$fname" ../"$fname.$ext"
 		fname="$fname.$ext"
 	fi
 fi
 
-mv "$fname" $id/
-
-cd $id
 
 # post id
 if [ "$ENABLE_POST_IDS" = y ]
