@@ -1,10 +1,10 @@
 #!/bin/sh
 
-arg="$@"
+arg="$QUERY_STRING"
 
 cd $(dirname "$0")
 
-. ./params.sh
+. cgi-bin/params.sh
 
 if [ -e motd ]
 then
@@ -32,11 +32,11 @@ fi
 
 if [ "$MAX_THREADS" -gt 0 ]
 then
-	phitem 7 'New thread (enter title for thread)' "$CHAN_ROOT/newthread"
+	phitem 7 'New thread (enter title for thread)' "$CHAN_ROOT/cgi-bin/newthread"
 	phline
 fi
 
-cat threadcache 2>/dev/null
+cat threadcache 2> /dev/null
 
 if [ "$ENABLE_ARCHIVE" = y ]
 then
