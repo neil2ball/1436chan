@@ -124,13 +124,13 @@ if [ ! -e threads ]
 then
 	echo 0 > threads
 fi
-if [ ! -e posts ]
+if [ ! -e ../posts ]
 then
-	echo 0 > posts
+	echo 0 > ../posts
 fi
 touch tripcodes
 touch postids
-chmod -f g+w threads posts tripcodes postids
+chmod -f g+w threads ../posts tripcodes postids
 
 # setup data directory
 if [ ! -e "$DATA_DIR" ]
@@ -156,74 +156,74 @@ chmod -f g+s "$SALT_DIR"
 
 # thread permissions
 chmod -f g+w template_*
-chmod -f g+s [0-9]*
-chmod -f g+w [0-9]*
-chmod -f g+s sticky_[0-9]*
-chmod -f g+w sticky_[0-9]*
+chmod -f g+s ../[0-9]*
+chmod -f g+w ../[0-9]*
+chmod -f g+s ../sticky_[0-9]*
+chmod -f g+w ../sticky_[0-9]*
 
 # fix thread links
-for thread in $(ls -dtr [0-9]* 2>/dev/null)
+for thread in $(ls -dtr ../[0-9]* 2>/dev/null)
 do
-	rm -f $thread/gophermap
+	rm -f ../$thread/gophermap
 
-	if [ -e $thread/post ]
+	if [ -e ../$thread/post ]
 	then
-		rm -f $thread/post
-		rm -f $thread/postlink
-		rm -f $thread/postfile
-		rm -f $thread/postsplr
-		rm -f $thread/postfileb64
-		rm -f $thread/postb64
+		rm -f ../$thread/post
+		rm -f ../$thread/postlink
+		rm -f ../$thread/postfile
+		rm -f ../$thread/postsplr
+		rm -f ../$thread/postfileb64
+		rm -f ../$thread/postb64
 
-		ln template_post $thread/post
-		ln template_postlink $thread/postlink
-		ln template_postfile $thread/postfile
-		ln template_postsplr $thread/postsplr
-		ln template_postfileb64 $thread/postfileb64
-		ln template_postb64 $thread/postb64
+		ln template_post ../$thread/post
+		ln template_postlink ../$thread/postlink
+		ln template_postfile ../$thread/postfile
+		ln template_postsplr ../$thread/postsplr
+		ln template_postfileb64 ../$thread/postfileb64
+		ln template_postb64 ../$thread/postb64
 
-		ln template_gophermap $thread/gophermap
+		ln template_gophermap ../$thread/gophermap
 	else
-		ln template_readonly_gophermap $thread/gophermap
+		ln template_readonly_gophermap ../$thread/gophermap
 	fi
 
-	rm -f $thread/postcache
+	rm -f ../$thread/postcache
 
-	sh updatepostcache.sh $thread > $thread/postcache
+	sh updatepostcache.sh ../$thread > ../$thread/postcache
 
-	touch $thread
+	touch ../$thread
 done
 
-for thread in $(ls -dtr sticky_* 2>/dev/null)
+for thread in $(ls -dtr ../sticky_* 2>/dev/null)
 do
-	rm -f $thread/gophermap
+	rm -f ../$thread/gophermap
 
-	if [ -e $thread/post ]
+	if [ -e ../$thread/post ]
 	then
-		rm -f $thread/post
-		rm -f $thread/postlink
-		rm -f $thread/postfile
-		rm -f $thread/postsplr
-		rm -f $thread/postfileb64
-		rm -f $thread/postb64
+		rm -f ../$thread/post
+		rm -f ../$thread/postlink
+		rm -f ../$thread/postfile
+		rm -f ../$thread/postsplr
+		rm -f ../$thread/postfileb64
+		rm -f ../$thread/postb64
 
-		ln template_post $thread/post
-		ln template_postlink $thread/postlink
-		ln template_postfile $thread/postfile
-		ln template_postsplr $thread/postsplr
-		ln template_postfileb64 $thread/postfileb64
-		ln template_postb64 $thread/postb64
+		ln template_post ../$thread/post
+		ln template_postlink ../$thread/postlink
+		ln template_postfile ../$thread/postfile
+		ln template_postsplr ../$thread/postsplr
+		ln template_postfileb64 ../$thread/postfileb64
+		ln template_postb64 ../$thread/postb64
 
-		ln template_gophermap $thread/gophermap
+		ln template_gophermap ../$thread/gophermap
 	else
-		ln template_readonly_gophermap $thread/gophermap
+		ln template_readonly_gophermap ../$thread/gophermap
 	fi
 
-	rm -f $thread/postcache
+	rm -f ../$thread/postcache
 
-	sh updatepostcache.sh $thread > $thread/postcache
+	sh updatepostcache.sh ../$thread > ../$thread/postcache
 
-	touch $thread
+	touch ../$thread
 done
 
 sh updatethreadcache.sh > threadcache
@@ -234,7 +234,7 @@ then
 fi
 
 # postcache permissions
-chmod -f g+w [0-9]*/postcache
-chmod -f g+w sticky_[0-9]*/postcache
-chmod -f g+w threadcache
+chmod -f g+w ../[0-9]*/postcache
+chmod -f g+w ../sticky_[0-9]*/postcache
+chmod -f g+w ../threadcache
 chmod -f g+w rss.xml
