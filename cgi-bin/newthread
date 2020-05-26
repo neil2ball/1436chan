@@ -53,43 +53,6 @@ then
 	exit 1
 fi
 
-nthreads=$(ls -d [0-9]* 2>/dev/null | wc -l)
-narchive=$(ls -d [0-9]*/archive 2>/dev/null | wc -l)
-
-if [ $((nthreads - narchive)) -ge "$MAX_THREADS" ]
-then
-	for thread in $(ls -dt [0-9]* 2>/dev/null)
-	do
-		if [ -e $thread/archive ]
-		then
-			continue
-		else
-			old=$thread
-		fi
-	done
-
-	if [ "$ENABLE_ARCHIVE" != n ]
-	then
-		sh archive.sh $old
-
-		if [ ! -e $old/archive ]
-		then
-			pherror 'Failed to archive thread!'
-			phitem 1 Return "$CHAN_ROOT"
-			exit
-		fi
-	else
-		rm -r $old
-
-		if [ -e $old ]
-		then
-			pherror 'Failed to remove thread!'
-			phitem 1 Return "$CHAN_ROOT"
-			exit
-		fi
-	fi
-fi
-
 mkdir ../$post
 mkdir ../$post/cgi-bin
 
@@ -112,6 +75,34 @@ then
 	phitem 1 'View thread' "$CHAN_ROOT/$post"
 
 	echo $no > threads
+	
+	nthreads=$(ls -d ../[0-9]* 2>/dev/null | wc -l)
+
+    while [ $nthreads -gt $MAX_THREADS ]
+    do
+        nthreads=$(($nthreads-1))
+        thread=$(ls -dt ../[0-9]* 2>/dev/null | tail -1)
+        if [ "$ENABLE_ARCHIVE" != n ]
+        then
+            sh archive.sh $thread
+
+            if [ -e $thread ]
+            then
+                pherror 'Failed to archive thread!'
+                phitem 1 Return "$CHAN_ROOT"
+                continue
+            fi
+        else
+            rm -r $thread
+
+            if [ -e $thread ]
+            then
+                pherror 'Failed to remove thread!'
+                phitem 1 Return "$CHAN_ROOT"
+                continue
+            fi
+        fi
+    done
 
 	sh updatethreadcache.sh > ../threadcache
 else

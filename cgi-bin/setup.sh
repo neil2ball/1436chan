@@ -233,6 +233,11 @@ then
 	sh initrss.sh
 fi
 
+if [ "$ENABLE_ARCHIVE" -eq "y" ]
+then
+    mkdir ../archive
+fi
+
 # postcache permissions
 chmod -f g+w ../[0-9]*/postcache
 chmod -f g+w ../sticky_[0-9]*/postcache
