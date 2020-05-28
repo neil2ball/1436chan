@@ -76,17 +76,17 @@ then
 
 	echo $no > threads
 	
-	nthreads=$(ls -d ../[0-9]* 2>/dev/null | wc -l)
+	nthreads=$(find ../[0-9]* -maxdepth 0 -type d 2>/dev/null | wc -l)
 
     while [ $nthreads -gt $MAX_THREADS ]
     do
-        nthreads=$(($nthreads-1))
-        thread=$(ls -dt ../[0-9]* 2>/dev/null | tail -1)
+        nthreads=$(($nthreads-1))  
+        thread=$(ls -dt $(find ../[0-9]* -maxdepth 0 -type d) | tail -1)
         if [ "$ENABLE_ARCHIVE" != n ]
         then
             sh archive.sh $thread
-
-            if [ -e $thread ]
+                
+            if [ -f $thread ]
             then
                 pherror 'Failed to archive thread!'
                 phitem 1 Return "$CHAN_ROOT"
@@ -95,7 +95,7 @@ then
         else
             rm -r $thread
 
-            if [ -e $thread ]
+            if [ -f $thread ]
             then
                 pherror 'Failed to remove thread!'
                 phitem 1 Return "$CHAN_ROOT"

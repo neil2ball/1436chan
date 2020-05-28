@@ -236,6 +236,7 @@ fi
 if [ "$ENABLE_ARCHIVE" -eq "y" ]
 then
     mkdir ../archive
+    ln template_archive_gophermap ../archive
 fi
 
 # postcache permissions

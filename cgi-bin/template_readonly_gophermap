@@ -4,14 +4,14 @@ cd $(dirname "$0")
 
 thread=$(echo $(basename $(pwd)) | sed 's/sticky_//g')
 
-threadstamp=$(cat stamp)
+threadstamp=$(cat cgi-bin/stamp)
 
-if [ ! -e ../cgi-bin/params.sh ]
+if [ ! -e ../../cgi-bin/params.sh ]
 then
 	exit 1
 fi
 
-. ../cgi-bin/params.sh
+. ../../cgi-bin/params.sh
 
 if [ -e archive ]
 then

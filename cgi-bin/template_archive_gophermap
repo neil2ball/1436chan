@@ -2,7 +2,7 @@
 
 cd $(dirname "$0")
 
-. ./params.sh
+. ../cgi-bin/params.sh
 
 phitem 1 Return "$CHAN_ROOT"
 phline
@@ -20,11 +20,11 @@ for thread in $(ls -td [0-9]* 2>/dev/null)
 do
 	cd $thread
 
-	stamp=$(cat stamp)
+	stamp=$(cat cgi-bin/stamp)
 
 	if [ -e archive ]
 	then
-		phitem 1 "[thread] $(cat gophertag) $(date -d @$stamp +"$DATE_FORMAT")" "$CHAN_ROOT/$thread"
+		phitem 1 "[thread] $(cat $thread/gophertag) $(date -d @$stamp +"$DATE_FORMAT")" "$CHAN_ROOT/archive/$thread"
 	fi
 
 	cd ..
