@@ -233,7 +233,7 @@ then
 	sh initrss.sh
 fi
 
-if [ "$ENABLE_ARCHIVE" -eq "y" ]
+if [ "$ENABLE_ARCHIVE" = "y" ]
 then
     mkdir ../archive
     ln template_archive_gophermap ../archive
@@ -243,4 +243,4 @@ fi
 chmod -f g+w ../[0-9]*/postcache
 chmod -f g+w ../sticky_[0-9]*/postcache
 chmod -f g+w ../threadcache
-chmod -f g+w rss.xml
+chmod -f g+w ../rss.xml

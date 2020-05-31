@@ -12,7 +12,7 @@ xmlstarlet ed -L -d "/rss/channel/item[position() >= $MAX_RSS_ITEMS]" rss.xml
 
 title=$(xmlstarlet esc < $thread/gophertag)
 
-if xmlstarlet sel -Q -t -c /rss/channel/item rss.xml
+if xmlstarlet sel -Q -t -c /rss/channel/item ../rss.xml
 then
 	xmlstarlet ed -L \
 		-i /rss/channel/item[1] -t elem -n item \
@@ -22,7 +22,7 @@ then
 		-s /rss/channel/item[1] -t elem -n pubDate -v "$(date -R)" \
 		-s /rss/channel/item[1] -t elem -n guid -v "$(uuid)" \
 		-i /rss/channel/item[1]/guid -t attr -n isPermaLink -v 'false' \
-		rss.xml
+		../rss.xml
 else
 	xmlstarlet ed -L \
 		-s /rss/channel -t elem -n item \
@@ -32,5 +32,5 @@ else
 		-s /rss/channel/item[1] -t elem -n pubDate -v "$(date -R)" \
 		-s /rss/channel/item[1] -t elem -n guid -v "$(uuid)" \
 		-i /rss/channel/item[1]/guid -t attr -n isPermaLink -v 'false' \
-		rss.xml
+		../rss.xml
 fi
